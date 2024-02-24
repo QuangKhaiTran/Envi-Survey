@@ -1,0 +1,184 @@
+/* 
+   Ho va ten :
+   MSSV      :
+   So may    :
+   De so     :           
+*/
+#include <stdio.h>
+#include <conio.h>
+#include <string.h>
+#include <windows.h>
+
+#define ML 100 //Maxlength: so hoa don toi da
+#define TAB 9
+typedef struct{
+  char MaSach[15];	
+  char TenSach[50];	
+  int SL; 	// So luong
+  float DG;	// Don gia, don vi tinh ngan dong
+}HOADON;
+
+void DocTapTin(char *st, HOADON hd[],int *N);
+void Docfile(char *st, HOADON hd[],int *N);
+
+void InMang(HOADON a[], int N);
+//--------------Phan khai bao prototype cua sinh vien ---------
+void sap(HOADON a[], int n);
+
+
+
+// Chuong trinh chinh
+int main() { 
+	FILE *f;   
+	HOADON hd[ML], x;	
+	int N=0;	
+	puts("--------KIEM TRA THUC HANH C-LAN 2--------");
+	Docfile("Input.txt",hd,&N);
+	InMang(hd,N);
+	strcpy(x.MaSach,"CT101");
+	strcpy(x.TenSach,"Lap trinh can ban C");
+	x.SL=100;
+	x.DG=50;
+	hd[N]=x;
+	N++;
+	puts("--------Sau khi them--------");	
+	InMang(hd,N);
+	sap(hd,N);
+	InMang(hd,N);
+	
+	
+	return 0;
+}
+//---------Phan cai dat ham cua sinh vien---------------
+
+void sap(HOADON a[], int n){
+	int i,j;
+	HOADON t;
+	for(i=0;i<n-1; i++)
+		for(j=i+1;j<n; j++)
+			if(a[i].SL>a[j].SL){
+				t=a[i];
+				a[i]=a[j];
+				a[j]=t;
+			}
+}
+
+
+
+
+
+
+//------Phan cai dat da cho-------------
+//---------Ham doc tap tin
+
+void Docfile(char *tenfile, HOADON hd[],int *N){
+	int k=0, i, j;
+	FILE *f;
+	f=fopen(tenfile,"rt");
+	
+	if(f!=NULL){		
+		while(!feof(f)){
+			fscanf(f,"%[^\t]%*c%[^\t]%*c%d%f%*c",hd[k].MaSach,hd[k].TenSach,&hd[k].SL,&hd[k].DG);
+			k++;			
+		}
+		*N=k;
+		fclose(f);
+	}
+	else{
+		puts("Loi mo file!!!");
+	}	
+}
+
+
+//----
+void DocTapTin(char *tenfile, HOADON hd[],int *N){
+	int k=0, i, j;
+	FILE *f;
+	char st[255],tam[15];
+	f=fopen(tenfile,"rt");
+	
+	if(f!=NULL){		
+		while(!feof(f)){
+			memset(st,'\0',255);
+			memset(tam,'\0',15);
+			fgets(st, 255, f);
+			if(strlen(st)>0)
+			{			
+				st[strlen(st)]='\0';		
+				i=0;	
+			
+				//Get MASACH						
+				while(i<strlen(st) && st[i]!=TAB) i++;
+				strncpy(hd[k].MaSach, st, i);
+				hd[k].MaSach[i]='\0';
+				
+				//Get TEN sach				
+				i++; j=i;
+				while(i<strlen(st) && st[i]!=TAB) i++;
+				strncpy(hd[k].TenSach, st+j, i-j);
+				hd[k].TenSach[i-j] = '\0';	
+						
+				//Get so luong				
+				i++; j=i;
+				while(i<strlen(st) && st[i]!=TAB) i++;
+				strncpy(tam, st+j, i-j);
+				tam[i-j] = '\0';
+				hd[k].SL=atoi(tam);													
+				
+				j=i+1;
+				strncpy(tam,st+j,strlen(st)-j);
+				tam[strlen(st)-j] ='\0';
+				hd[k].DG=atof(tam);			
+			k++;		
+			}//if (Strlen(st)>0
+		}
+		*N=k;
+		fclose(f);
+	}
+	else{
+		puts("Loi mo file!!!");
+	}	
+}
+
+//------------Ham in mang ra man hinh
+void InMang(HOADON a[], int N){
+	
+	int i;
+	printf("\n");
+	printf(" ---------------------------------------------------------------------\n");
+	printf("| STT  |   Ten Sach                    | Ma Sach |So Luong | Don Gia  |\n");
+	printf("|------+-------------------------------+---------+---------+----------|");
+	for(i=0;i<N;i++){
+		printf("\n|%4d. | %-30s| %-7s | %-6d  | %-9.1f|",i+1, a[i].TenSach, a[i].MaSach, a[i].SL, a[i].DG);
+	}
+	printf("\n ---------------------------------------------------------------------\n");
+	printf("\n");
+}
+	
+
+
+
+
+
+
+//
+
+//void Print_List(List L){
+//	Position p; int d;
+//	float tb;
+//	ElementType x;
+//	p = First_List(L);	
+//	printf("\n");
+//	printf(" -------------------------------------------------------------------------\n");
+//	printf("| STT  |   Ho Ten sinh vien            | Diem LT    | Diem TH  | Diem TB  |\n");
+//	printf("|------+-------------------------------+------------+----------+----------|\n");
+//	d=1;
+//	while(p != End_List(L))	{   
+//        x=Retrieve(p, L); 
+//		tb= (x.Diemlt+ x.Diemth)/2 ;
+//		printf("|  %-3d | %-30s|  %-9.2f | %-4.2f     | %-4.2f     |\n",d,x.HoTen,x.Diemlt,x.Diemth,tb); 		       		
+//		p = p->Next;
+//		d++;		
+//	}
+//	printf(" -------------------------------------------------------------------------\n");
+//}
